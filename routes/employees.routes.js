@@ -4,7 +4,7 @@ const Employee = require('../models/employees.model');
 
 router.get('/employees', async (req, res) => {
   try {
-    res.json(await Employee.find());
+    res.json(await Employee.find().populate('department'));
   }
   catch(err) {
     res.status(500).json({ message: err.message });
@@ -15,7 +15,7 @@ router.get('/employees/random', async (req, res) => {
   try {
     const count = await Employee.countDocuments();
     const random = Math.floor(Math.random() * count);
-    const emp = await Employee.findOne().skip(random);
+    const emp = await Employee.findOne().skip(random).populate('department');
     if(!emp) res.status(404).json({ message: 'Not found...' });
     else res.json(emp);
   }
@@ -26,7 +26,7 @@ router.get('/employees/random', async (req, res) => {
 
 router.get('/employees/:id', async (req, res) => {
   try {
-    const emp = await Employee.findById(req.params.id);
+    const emp = await Employee.findById(req.params.id).populate('department');
     if(!emp) res.status(404).json({ message: 'Not found...' });
     else res.json(emp);
   }
@@ -37,8 +37,8 @@ router.get('/employees/:id', async (req, res) => {
 
 router.post('/employees', async (req, res) => {
   try {
-    const { firstName, lastName } = req.body;
-    const newEmployee = new Employee({ firstName: firstName, lastName: lastName});
+    const { firstName, lastName, department } = req.body;
+    const newEmployee = new Employee({ firstName: firstName, lastName: lastName, department: department});
     newEmployee.save();
     res.json({ message: 'OK'});
   }
@@ -48,12 +48,12 @@ router.post('/employees', async (req, res) => {
 });
 
 router.put('/employees/:id', async (req, res) => {
-  const { firstName, lastName } = req.body;
+  const { firstName, lastName, department } = req.body;
 
   try {
     const emp = await Employee.findById(req.params.id);
     if(emp){
-      await Employee.updateOne({ _id: req.params.id }, { firstName: firstName, lastName: lastName });
+      await Employee.updateOne({ _id: req.params.id }, { firstName: firstName, lastName: lastName, department: department });
       res.json({message: 'OK' });
     }
     else res.status(404).json({ message: 'Not found...' });
