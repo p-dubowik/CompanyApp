@@ -41,49 +41,5 @@ mongoClient.connect('mongodb://0.0.0.0:27017', { useNewUrlParser: true, useUnifi
       console.log('Server is running on port: 8000');
     });
 
-    //test 1
-    db.collection('employees')
-      .find({ department: 'IT' })
-      .toArray()
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    //test 2
-    db.collection('employees')
-      .findOne({ department: 'IT' })
-      .then((item) => {
-        console.log(item);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    //test 3
-    db.collection('departments')
-      .insertOne({ name: 'Menagement' })
-      .catch((err) => {
-        console.log(err);
-      });
-
-    //test 4
-    db.collection('employees')
-      .updateOne({ department: 'IT' }, { $set: { salary: 6000 }})
-      .catch((err) => {
-        console.log(err);
-      });
-
-    //test 5
-    db.collection('departments')
-      .deleteOne({ name: 'Menagement' })
-      .catch((err) => {
-        console.log(err);
-      });
-
-
-
   }
 });
